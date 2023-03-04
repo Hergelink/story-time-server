@@ -27,10 +27,12 @@ const secret = 'asdasdf#$sdf@#34k2k#234k*)2j%34jk';
 // );
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // Allow any origin to access the resource
+  res.header("Access-Control-Allow-Origin", "https://storytime-client.onrender.com"); // Replace this with the origin of your client application
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"); // Allow specific headers to be sent by the client
+  res.header("Access-Control-Allow-Credentials", "true"); // Allow cookies to be sent with the request
   next();
 });
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
