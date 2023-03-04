@@ -22,9 +22,9 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdasdf#$sdf@#34k2k#234k*)2j%34jk';
 
 
-app.use(
-  cors({ credentials: true, origin: `${process.env.CORS}` })
-);
+// app.use(
+//   cors({ credentials: true, origin: `${process.env.CORS}` })
+// );
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // Allow any origin to access the resource
