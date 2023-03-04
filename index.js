@@ -22,7 +22,7 @@ const secret = 'asdasdf#$sdf@#34k2k#234k*)2j%34jk';
 
 // app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(
-  cors({ credentials: true, origin: 'https://storytime-client.onrender.com' })
+  cors({ credentials: true, origin: `${process.env.REACT_APP_API_END_POINT}` })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
