@@ -12,6 +12,7 @@ const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const axios = require('axios');
+const { Console } = require('console');
 
 const PORT = process.env.PORT || 3001;
 
@@ -22,8 +23,9 @@ const secret = 'asdasdf#$sdf@#34k2k#234k*)2j%34jk';
 
 // app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(
-  cors({ credentials: true, origin: `${process.env.REACT_APP_API_END_POINT}` })
+  cors({ credentials: true, origin: `${process.env.CORS}` })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
