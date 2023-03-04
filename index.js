@@ -8,7 +8,6 @@ const Story = require('./models/Story');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const cookie = require('cookie');
 const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
@@ -119,17 +118,7 @@ app.post('/login', async (req, res) => {
             console.error(err);
             return res.status(500).json({ message: 'Error signing token' });
           }
-          // res.cookie('token', token).json({
-          //   id: userDoc._id,
-          //   email,
-          // });
-          const cookieOptions = {
-            httpOnly: true,
-            maxAge: 3600000, // 1 hour
-            path: '/',
-          };
-          const tokenCookie = cookie.serialize('token', token, cookieOptions);
-          res.setHeader('Set-Cookie', tokenCookie).json({
+          res.cookie('token', token).json({
             id: userDoc._id,
             email,
           });
