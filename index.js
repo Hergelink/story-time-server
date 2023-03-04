@@ -22,9 +22,9 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdasdf#$sdf@#34k2k#234k*)2j%34jk';
 
 
-// app.use(
-//   cors({ credentials: true, origin: `${process.env.CORS}` })
-// );
+app.use(
+  cors({ credentials: true, origin: process.env.CORS })
+);
 
 // app.use(function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "https://storytime-client.onrender.com"); // Replace this with the origin of your client application
@@ -33,12 +33,12 @@ const secret = 'asdasdf#$sdf@#34k2k#234k*)2j%34jk';
 //   next();
 // });
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", req.headers.origin);
+//   res.header("Access-Control-Allow-Credentials", true);
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 
 
