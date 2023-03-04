@@ -81,28 +81,60 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// app.post('/login', async (req, res) => {
+//   const { email, password } = req.body;
+//   const userDoc = await User.findOne({ email });
+
+//   if (userDoc) {
+//     const passOk = bcrypt.compareSync(password, userDoc.password);
+//     if (passOk) {
+//       //Logged in
+//       jwt.sign({ email, id: userDoc._id }, secret, {}, (err, token) => {
+//         if (err) throw err;
+//         res.cookie('token', token).json({
+//           id: userDoc._id,
+//           email,
+//         });
+//       });
+//     } else {
+//       res.status(400).json('wrong credentials');
+//     }
+//   } else {
+//     res.status(400).json('user not found');
+//   }
+// });
+
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  const userDoc = await User.findOne({ email });
+  try {
+    const userDoc = await User.findOne({ email });
 
-  if (userDoc) {
-    const passOk = bcrypt.compareSync(password, userDoc.password);
-    if (passOk) {
-      //Logged in
-      jwt.sign({ email, id: userDoc._id }, secret, {}, (err, token) => {
-        if (err) throw err;
-        res.cookie('token', token).json({
-          id: userDoc._id,
-          email,
+    if (userDoc) {
+      const passOk = bcrypt.compareSync(password, userDoc.password);
+      if (passOk) {
+        //Logged in
+        jwt.sign({ email, id: userDoc._id }, secret, {}, (err, token) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error signing token' });
+          }
+          res.cookie('token', token).json({
+            id: userDoc._id,
+            email,
+          });
         });
-      });
+      } else {
+        res.status(400).json('wrong credentials');
+      }
     } else {
-      res.status(400).json('wrong credentials');
+      res.status(400).json('user not found');
     }
-  } else {
-    res.status(400).json('user not found');
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error logging in' });
   }
 });
+
 
 // app.get('/profile', (req, res) => {
 //   const { token } = req.cookies;
@@ -118,54 +150,99 @@ app.post('/login', async (req, res) => {
 //   }
 // });
 
+// app.get('/profile', (req, res) => {
+//   const { token } = req.cookies;
+//   jwt.verify(token, secret, {}, (err, info) => {
+//     if (err) throw err;
+//     res.json(info);
+//   });
+//   res.json(req.cookies);
+// });
+
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, (err, info) => {
-    if (err) throw err;
+    if (err) {
+      res.status(401).json('Unauthorized');
+      return;
+    }
     res.json(info);
   });
-  res.json(req.cookies);
 });
 
 app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
 });
 
+// app.post('/post', async (req, res) => {
+//   const { token } = req.cookies;
+
+//   jwt.verify(token, secret, {}, async (err, info) => {
+//     if (err) throw err;
+
+//     try {
+//       const { title, description, storyBody, storyEnd, image } = req.body;
+
+//       const response = await axios({
+//         method: 'get',
+//         url: image,
+//         responseType: 'stream',
+//       });
+//       const cleanTitle = title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_');
+
+//       const imagePath = `uploads/${cleanTitle}.jpg`;
+//       response.data.pipe(fs.createWriteStream(imagePath));
+
+//       const storyDoc = await Story.create({
+//         title,
+//         description,
+//         storyBody,
+//         storyEnd,
+//         image: imagePath,
+//         author: info.id,
+//       });
+
+//       res.json({ storyDoc });
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ message: 'Server error' });
+//     }
+//   });
+// });
+
 app.post('/post', async (req, res) => {
   const { token } = req.cookies;
 
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
+  try {
+    const info = jwt.verify(token, secret, {});
+    const { title, description, storyBody, storyEnd, image } = req.body;
 
-    try {
-      const { title, description, storyBody, storyEnd, image } = req.body;
+    const response = await axios({
+      method: 'get',
+      url: image,
+      responseType: 'stream',
+    });
 
-      const response = await axios({
-        method: 'get',
-        url: image,
-        responseType: 'stream',
-      });
-      const cleanTitle = title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_');
+    const cleanTitle = title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_');
+    const imagePath = `uploads/${cleanTitle}.jpg`;
+    response.data.pipe(fs.createWriteStream(imagePath));
 
-      const imagePath = `uploads/${cleanTitle}.jpg`;
-      response.data.pipe(fs.createWriteStream(imagePath));
+    const storyDoc = await Story.create({
+      title,
+      description,
+      storyBody,
+      storyEnd,
+      image: imagePath,
+      author: info.id,
+    });
 
-      const storyDoc = await Story.create({
-        title,
-        description,
-        storyBody,
-        storyEnd,
-        image: imagePath,
-        author: info.id,
-      });
-
-      res.json({ storyDoc });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
+    res.json({ storyDoc });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
+
 
 app.get('/post', async (req, res) => {
   res.json(await Story.find().sort({ createdAt: -1 }).limit(20));
