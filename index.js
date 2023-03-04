@@ -12,7 +12,7 @@ const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const axios = require('axios');
-const { Console } = require('console');
+
 
 const PORT = process.env.PORT || 3001;
 
@@ -100,19 +100,29 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// app.get('/profile', (req, res) => {
+//   const { token } = req.cookies;
+//   try {
+//     const decoded = jwt.verify(token, secret);
+//     res.json(decoded);
+//   } catch (err) {
+//     if (err.name === 'TokenExpiredError') {
+//       res.status(403).json({ message: 'Token expired' });
+//     } else {
+//       res.status(401).json({ message: 'Invalid token' });
+//     }
+//   }
+// });
+
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
-  try {
-    const decoded = jwt.verify(token, secret);
-    res.json(decoded);
-  } catch (err) {
-    if (err.name === 'TokenExpiredError') {
-      res.status(403).json({ message: 'Token expired' });
-    } else {
-      res.status(401).json({ message: 'Invalid token' });
-    }
-  }
+  jwt.verify(token, secret, {}, (err, info) => {
+    if (err) throw err;
+    res.json(info);
+  });
+  res.json(req.cookies);
 });
+
 
 app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
