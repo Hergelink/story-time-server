@@ -118,7 +118,17 @@ app.post('/login', async (req, res) => {
             console.error(err);
             return res.status(500).json({ message: 'Error signing token' });
           }
-          res.cookie('token', token).json({
+          // res.cookie('token', token).json({
+          //   id: userDoc._id,
+          //   email,
+          // });
+          const cookieOptions = {
+            httpOnly: true,
+            maxAge: 3600000, // 1 hour
+            path: '/',
+          };
+          const tokenCookie = cookie.serialize('token', token, cookieOptions);
+          res.setHeader('Set-Cookie', tokenCookie).json({
             id: userDoc._id,
             email,
           });
@@ -134,7 +144,6 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Error logging in' });
   }
 });
-
 
 // app.get('/profile', (req, res) => {
 //   const { token } = req.cookies;
@@ -242,7 +251,6 @@ app.post('/post', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 app.get('/post', async (req, res) => {
   res.json(await Story.find().sort({ createdAt: -1 }).limit(20));
