@@ -1,7 +1,7 @@
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv').config({ path: './server/.env' });
+const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const Story = require('./models/Story');
@@ -9,8 +9,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-const uploadMiddleware = multer({ dest: './server/uploads/' });
-
+const uploadMiddleware = multer({ dest: 'uploads/' });
+console.log(process.env.USERNAME);
 const fs = require('fs');
 const axios = require('axios');
 
@@ -43,6 +43,8 @@ const connectDB = async () => {
 
 // app.use(express.static(path.resolve(__dirname, '../client/build')));
 app.use('/uploads', express.static(__dirname + '/uploads'));
+
+
 
 app.use('/openai', require('./routes/openaiRoutes'));
 
@@ -101,11 +103,6 @@ app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
 });
 
-// health check for render
-app.get('/health', (req, res) => {
-  res.sendStatus(200);
-});
-
 app.post('/post', async (req, res) => {
   const { token } = req.cookies;
 
@@ -122,7 +119,7 @@ app.post('/post', async (req, res) => {
       });
       const cleanTitle = title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_');
       // .replace('_', '');
-      const imagePath = `./server/uploads/${cleanTitle}.jpg`;
+      const imagePath = `uploads/${cleanTitle}.jpg`;
       response.data.pipe(fs.createWriteStream(imagePath));
 
       const storyDoc = await Story.create({
@@ -150,11 +147,10 @@ app.get('/post', async (req, res) => {
 //   console.log(`Server listening on ${PORT}`);
 // });
 
-
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
   });
-})
+});
 
 // starting to divide server and client
