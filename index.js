@@ -10,7 +10,6 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
-console.log(process.env.USERNAME);
 const fs = require('fs');
 const axios = require('axios');
 
@@ -21,7 +20,10 @@ const app = express();
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdasdf#$sdf@#34k2k#234k*)2j%34jk';
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+// app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(
+  cors({ credentials: true, origin: 'https://storytime-client.onrender.com' })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -39,12 +41,7 @@ const connectDB = async () => {
   }
 };
 
-// mongoose.connect(`mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.ypcmtju.mongodb.net/?retryWrites=true&w=majority`)
-
-// app.use(express.static(path.resolve(__dirname, '../client/build')));
 app.use('/uploads', express.static(__dirname + '/uploads'));
-
-
 
 app.use('/openai', require('./routes/openaiRoutes'));
 
@@ -118,7 +115,7 @@ app.post('/post', async (req, res) => {
         responseType: 'stream',
       });
       const cleanTitle = title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_');
-      // .replace('_', '');
+
       const imagePath = `uploads/${cleanTitle}.jpg`;
       response.data.pipe(fs.createWriteStream(imagePath));
 
@@ -143,14 +140,8 @@ app.get('/post', async (req, res) => {
   res.json(await Story.find().sort({ createdAt: -1 }).limit(20));
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server listening on ${PORT}`);
-// });
-
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
   });
 });
-
-// starting to divide server and client
