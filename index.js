@@ -32,20 +32,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "https://storytime-client.onrender.com"); // Replace this with the origin of your client application
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"); // Allow specific headers to be sent by the client
-//   res.header("Access-Control-Allow-Credentials", "true"); // Allow cookies to be sent with the request
-//   next();
-// });
-
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", req.headers.origin);
-//   res.header("Access-Control-Allow-Credentials", true);
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -81,29 +67,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// app.post('/login', async (req, res) => {
-//   const { email, password } = req.body;
-//   const userDoc = await User.findOne({ email });
-
-//   if (userDoc) {
-//     const passOk = bcrypt.compareSync(password, userDoc.password);
-//     if (passOk) {
-//       //Logged in
-//       jwt.sign({ email, id: userDoc._id }, secret, {}, (err, token) => {
-//         if (err) throw err;
-//         res.cookie('token', token).json({
-//           id: userDoc._id,
-//           email,
-//         });
-//       });
-//     } else {
-//       res.status(400).json('wrong credentials');
-//     }
-//   } else {
-//     res.status(400).json('user not found');
-//   }
-// });
-
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -135,34 +98,13 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// app.get('/profile', (req, res) => {
-//   const { token } = req.cookies;
-//   try {
-//     const decoded = jwt.verify(token, secret);
-//     res.json(decoded);
-//   } catch (err) {
-//     if (err.name === 'TokenExpiredError') {
-//       res.status(403).json({ message: 'Token expired' });
-//     } else {
-//       res.status(401).json({ message: 'Invalid token' });
-//     }
-//   }
-// });
-
-// app.get('/profile', (req, res) => {
-//   const { token } = req.cookies;
-//   jwt.verify(token, secret, {}, (err, info) => {
-//     if (err) throw err;
-//     res.json(info);
-//   });
-//   res.json(req.cookies);
-// });
 
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, (err, info) => {
     if (err) {
       res.status(401).json('Unauthorized');
+      console.log(err);
       return;
     }
     res.json(info);
@@ -173,41 +115,6 @@ app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
 });
 
-// app.post('/post', async (req, res) => {
-//   const { token } = req.cookies;
-
-//   jwt.verify(token, secret, {}, async (err, info) => {
-//     if (err) throw err;
-
-//     try {
-//       const { title, description, storyBody, storyEnd, image } = req.body;
-
-//       const response = await axios({
-//         method: 'get',
-//         url: image,
-//         responseType: 'stream',
-//       });
-//       const cleanTitle = title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_');
-
-//       const imagePath = `uploads/${cleanTitle}.jpg`;
-//       response.data.pipe(fs.createWriteStream(imagePath));
-
-//       const storyDoc = await Story.create({
-//         title,
-//         description,
-//         storyBody,
-//         storyEnd,
-//         image: imagePath,
-//         author: info.id,
-//       });
-
-//       res.json({ storyDoc });
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ message: 'Server error' });
-//     }
-//   });
-// });
 
 app.post('/post', async (req, res) => {
   const { token } = req.cookies;
