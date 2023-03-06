@@ -18,16 +18,16 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 const salt = bcrypt.genSaltSync(10);
-const secret = 'asdasdf#$sdf@#34k2k#234k*)2j%34jk';
+const secret = process.env.SECRET;
 
 app.use(cors({ credentials: true, origin: process.env.CORS }));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', process.env.CORS);
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
+  // res.header(
+  //   'Access-Control-Allow-Headers',
+  //   'Origin, X-Requested-With, Content-Type, Accept'
+  // );
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
@@ -98,11 +98,10 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
   // jwt.verify(token, secret, {}, (err, info) => {
-    jwt.verify(token, secret, (err, info) => {
+  jwt.verify(token, secret, (err, info) => {
     if (err) {
       res.status(401).json('Unauthorized');
       // res.json(token);
@@ -116,7 +115,6 @@ app.get('/profile', (req, res) => {
 app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
 });
-
 
 app.post('/post', async (req, res) => {
   const { token } = req.cookies;
