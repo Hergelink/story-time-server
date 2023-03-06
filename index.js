@@ -100,12 +100,9 @@ app.post('/login', async (req, res) => {
 
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
-  // jwt.verify(token, secret, {}, (err, info) => {
-  jwt.verify(token, secret, (err, info) => {
+  jwt.verify(token, secret, {}, (err, info) => {
     if (err) {
       res.status(401).json('Unauthorized');
-      // res.json(token);
-      // console.log(err);
       return;
     }
     res.json(info);
