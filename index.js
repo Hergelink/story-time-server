@@ -76,7 +76,7 @@ app.post('/login', async (req, res) => {
       const passOk = bcrypt.compareSync(password, userDoc.password);
       if (passOk) {
         //Logged in
-        jwt.sign({ email, id: userDoc._id }, secret, {}, (err, token) => {
+         jwt.sign({ email: userDoc.email, id: userDoc._id }, secret, { expiresIn: '24h', }, (err, token) => {
           if (err) {
             console.error(err);
             return res.status(500).json({ message: 'Error signing token' });
