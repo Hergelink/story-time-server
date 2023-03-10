@@ -24,10 +24,10 @@ app.use(cors({ credentials: true, origin: process.env.CORS }));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', process.env.CORS);
-  // res.header(
-  //   'Access-Control-Allow-Headers',
-  //   'Origin, X-Requested-With, Content-Type, Accept'
-  // );
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
@@ -107,7 +107,6 @@ app.post('/login', async (req, res) => {
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
   // const token = req.cookies.token;
-  
 
   if (token) {
     jwt.verify(token, secret, {}, (err, info) => {
