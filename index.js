@@ -111,7 +111,6 @@ app.get('/profile', (req, res) => {
       if (err) {
         console.log(err.message);
         res.status(401).json('Unauthorized');
-        res.send(console.log(err.message))
         return;
       }
       res.json(info);
