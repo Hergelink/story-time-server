@@ -82,11 +82,11 @@ app.post('/login', async (req, res) => {
               return res.status(500).json({ message: 'Error signing token' });
             }
             res.cookie('token', token).json({  
-              secure: true,            
+              // secure: true,            
               httpOnly: true,              
               id: userDoc._id,
               email,
-              domain: ".https://storytime-client.onrender.com/"
+              domain: ".onrender.com/"
             });
           }
         );
