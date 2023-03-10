@@ -108,13 +108,17 @@ app.get('/profile', (req, res) => {
   const { token } = req.cookies;
   // const token = req.cookies.token;
 
-  jwt.verify(token, secret, {}, (err, info) => {
-    if (err) {
-      res.status(401).json('Unauthorized');
-      return;
-    }
-    res.json(info);
-  });
+  if (token) {
+    jwt.verify(token, secret, {}, (err, info) => {
+      if (err) {
+        res.status(401).json('Unauthorized');
+        return;
+      }
+      res.json(info);
+    });
+  } else {
+    res.status(401).json('Unauthorized');
+  }
 });
 
 app.post('/logout', (req, res) => {
