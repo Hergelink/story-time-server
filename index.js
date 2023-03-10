@@ -76,16 +76,21 @@ app.post('/login', async (req, res) => {
       const passOk = bcrypt.compareSync(password, userDoc.password);
       if (passOk) {
         //Logged in
-         jwt.sign({ email: userDoc.email, id: userDoc._id }, secret, { expiresIn: '24h', }, (err, token) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).json({ message: 'Error signing token' });
+        jwt.sign(
+          { email: userDoc.email, id: userDoc._id },
+          secret,
+          { expiresIn: '24h' },
+          (err, token) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).json({ message: 'Error signing token' });
+            }
+            res.cookie('token', token).json({
+              id: userDoc._id,
+              email,
+            });
           }
-          res.cookie('token', token).json({
-            id: userDoc._id,
-            email,
-          });
-        });
+        );
       } else {
         res.status(400).json('wrong credentials');
       }
@@ -100,6 +105,7 @@ app.post('/login', async (req, res) => {
 
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
+
   jwt.verify(token, secret, {}, (err, info) => {
     if (err) {
       res.status(401).json('Unauthorized');
