@@ -86,6 +86,7 @@ app.post('/login', async (req, res) => {
               return res.status(500).json({ message: 'Error signing token' });
             }
             res.cookie('token', token).json({
+              httpOnly: false,
               id: userDoc._id,
               email,
             });
@@ -104,7 +105,8 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
-  const { token } = req.cookies;
+  // const { token } = req.cookies;
+  const token = req.cookies.token;
 
   jwt.verify(token, secret, {}, (err, info) => {
     if (err) {
