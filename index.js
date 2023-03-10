@@ -110,7 +110,8 @@ app.get('/profile', (req, res) => {
     jwt.verify(token, secret, {}, (err, info) => {
       if (err) {
         console.log(err.message);
-        res.status(401).json('Unauthorized');
+        res.status(401).json('Unauthorized', err.message);
+        
         return;
       }
       res.json(info);
