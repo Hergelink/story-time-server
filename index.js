@@ -85,6 +85,7 @@ app.post('/login', async (req, res) => {
               httpOnly: true,              
               id: userDoc._id,
               email,
+              domain: ".storytime-client.onrender.com/"
             });
           }
         );
