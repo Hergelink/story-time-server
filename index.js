@@ -81,7 +81,8 @@ app.post('/login', async (req, res) => {
               console.error(err);
               return res.status(500).json({ message: 'Error signing token' });
             }
-            res.cookie('token', token).json({              
+            res.cookie('token', token).json({  
+              secure: true,            
               httpOnly: true,              
               id: userDoc._id,
               email,
