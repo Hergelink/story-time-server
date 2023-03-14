@@ -87,6 +87,8 @@ app.post('/login', async (req, res) => {
               id: userDoc._id,
               email,
               domain: '.onrender.com/',
+              sameSite: 'none',
+              
             });
           }
         );
