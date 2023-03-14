@@ -86,11 +86,12 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 sameSite: 'none',
                 secure: true,
+                domain: '.onrender.com/',
               })
               .json({
                 id: userDoc._id,
                 email,
-                // domain: '.onrender.com/',
+                
               });
           }
         );
