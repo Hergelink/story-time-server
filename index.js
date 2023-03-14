@@ -81,12 +81,12 @@ app.post('/login', async (req, res) => {
               console.error(err);
               return res.status(500).json({ message: 'Error signing token' });
             }
-            res.cookie('token', token).json({  
-              // secure: true,            
-              httpOnly: true,              
+            res.cookie('token', token).json({
+              // secure: true,
+              httpOnly: true,
               id: userDoc._id,
               email,
-              domain: ".onrender.com/"
+              domain: '.onrender.com/',
             });
           }
         );
@@ -104,17 +104,24 @@ app.post('/login', async (req, res) => {
 
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
- 
 
   if (token) {
+    // jwt.verify(token, secret, {}, (err, info) => {
+    //   if (err) {
+    //     console.log(err.message);
+    //     res.status(401).json('Unauthorized', err.message);
+
+    //     return;
+    //   }
+    //   res.json(info);
+    // });
     jwt.verify(token, secret, {}, (err, info) => {
       if (err) {
         console.log(err.message);
-        res.status(401).json('Unauthorized', err.message);
-        
+        res.status(401).json({ message: 'Unauthorized', error: err.message });
         return;
       }
-      res.json(info);
+      res.status(200).json(info);
     });
   } else {
     res.status(401).json('Unauthorized');
