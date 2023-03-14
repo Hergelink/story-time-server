@@ -86,7 +86,7 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 sameSite: 'none',
                 secure: true,
-                domain: '.onrender.com/',
+                domain: process.env.COOKIE_DOMAIN,
               })
               .json({
                 id: userDoc._id,
