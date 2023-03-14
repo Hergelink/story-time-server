@@ -81,15 +81,17 @@ app.post('/login', async (req, res) => {
               console.error(err);
               return res.status(500).json({ message: 'Error signing token' });
             }
-            res.cookie('token', token).json({
-              secure: true,
-              httpOnly: true,
-              id: userDoc._id,
-              email,
-              domain: '.onrender.com/',
-              sameSite: 'none',
-              
-            });
+            res
+              .cookie('token', token, {
+                httpOnly: true,
+                sameSite: 'none',
+                secure: true,
+              })
+              .json({
+                id: userDoc._id,
+                email,
+                // domain: '.onrender.com/',
+              });
           }
         );
       } else {
@@ -108,7 +110,6 @@ app.get('/profile', (req, res) => {
   const { token } = req.cookies;
 
   if (token) {
-   
     jwt.verify(token, secret, {}, (err, info) => {
       if (err) {
         console.log(err.message);
