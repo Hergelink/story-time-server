@@ -91,7 +91,6 @@ app.post('/login', async (req, res) => {
               .json({
                 id: userDoc._id,
                 email,
-                
               });
           }
         );
