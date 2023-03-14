@@ -86,12 +86,13 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 sameSite: 'none',
                 secure: true,
-                domain: process.env.COOKIE_DOMAIN,
+                
               })
               .json({
                 id: userDoc._id,
                 email,
               });
+              // domain: process.env.COOKIE_DOMAIN,
           }
         );
       } else {
