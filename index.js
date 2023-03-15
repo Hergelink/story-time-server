@@ -84,9 +84,9 @@ app.post('/login', async (req, res) => {
             res
               .cookie('token', token, {
                 // httpOnly: true,
-                sameSite: 'none',
-                secure: true,
-                domain: process.env.COOKIE_DOMAIN,  
+                // sameSite: 'none',
+                // secure: true,
+                // domain: process.env.COOKIE_DOMAIN,  
               })
               .json({
                 id: userDoc._id,
@@ -164,6 +164,11 @@ app.post('/post', async (req, res) => {
 app.get('/post', async (req, res) => {
   res.json(await Story.find().sort({ createdAt: -1 }).limit(20));
 });
+
+app.post("/payment", (req, res) => {
+  const email = req.body.email;
+  console.log(email)
+})
 
 connectDB().then(() => {
   app.listen(PORT, () => {
