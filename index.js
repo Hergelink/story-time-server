@@ -168,6 +168,7 @@ app.get('/post', async (req, res) => {
 app.post("/payment", (req, res) => {
   const email = req.body.email;
   console.log(email)
+  res.json(email)
 })
 
 connectDB().then(() => {
