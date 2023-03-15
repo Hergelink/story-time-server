@@ -166,9 +166,9 @@ app.get('/post', async (req, res) => {
 });
 
 app.post("/payment", (req, res) => {
-  const email = req.body.email;
-  console.log(email)
-  res.json(email)
+  const data = req.body.data;
+  console.log(data)
+  res.json(data)
 })
 
 connectDB().then(() => {
