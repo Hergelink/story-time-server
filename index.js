@@ -168,9 +168,18 @@ app.get('/post', async (req, res) => {
 });
 
 app.post('/payment', (req, res) => {
-  const data = req.body.data;
-  console.log(data);
-  res.json(data);
+  const { metadata } = req.body;
+  const userId = metadata.user_id;
+
+  // Update the user's subscription status in your database
+  User.updateOne({ _id: userId }, { subscriptionStatus: 'active' }, (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Error updating subscription status' });
+    } else {
+      res.status(200).json({ message: 'Subscription updated successfully' });
+    }
+  });
 });
 
 // authentication endpoint
