@@ -12,6 +12,8 @@ const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const axios = require('axios');
+// const auth = require("./auth");
+const auth = require('./auth.js');
 
 const PORT = process.env.PORT || 3001;
 
@@ -82,17 +84,17 @@ app.post('/login', async (req, res) => {
               return res.status(500).json({ message: 'Error signing token' });
             }
             res
+              .status(200)
               .cookie('token', token, {
                 // httpOnly: true,
                 // sameSite: 'none',
                 // secure: true,
-                // domain: process.env.COOKIE_DOMAIN,  
+                // domain: process.env.COOKIE_DOMAIN,
               })
               .json({
                 id: userDoc._id,
                 email,
               });
-              
           }
         );
       } else {
@@ -165,11 +167,16 @@ app.get('/post', async (req, res) => {
   res.json(await Story.find().sort({ createdAt: -1 }).limit(20));
 });
 
-app.post("/payment", (req, res) => {
+app.post('/payment', (req, res) => {
   const data = req.body.data;
-  console.log(data)
-  res.json(data)
-})
+  console.log(data);
+  res.json(data);
+});
+
+// authentication endpoint
+app.get('/auth-endpoint', auth, (request, response) => {
+  response.json({ message: 'You are authorized to access me' });
+});
 
 connectDB().then(() => {
   app.listen(PORT, () => {
