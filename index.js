@@ -89,7 +89,7 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 sameSite: 'none',
                 secure: true,
-                
+                domain: 'storytime-server.onrender.com',
               })
               .json({
                 id: userDoc._id,
