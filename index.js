@@ -89,7 +89,7 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 sameSite: 'none',
                 secure: true,
-                domain: 'storytime-server.onrender.com',
+                domain: process.env.COOKIE_DOMAIN,
               })
               .json({
                 id: userDoc._id,
@@ -130,7 +130,10 @@ app.post('/logout', (req, res) => {
   // res.cookie('token', '').json('ok');
   console.log('logout request received');
   console.log('cookie before clearing:', req.cookies.token);
-  res.clearCookie('token').json('ok');
+  // res.clearCookie('token').json('ok');
+  res
+    .clearCookie('token', { path: '/', domain: process.env.COOKIE_DOMAIN })
+    .json('ok');
   console.log('cookie after clearing:', req.cookies.token);
 });
 
@@ -173,7 +176,7 @@ app.get('/post', async (req, res) => {
 
 app.post('/payment', (req, res) => {
   const { metadata } = req.body;
-  const userId = metadata.user_id;
+  const userId = metadata.id;
 
   // Update the user's subscription status in your database
   User.updateOne({ _id: userId }, { subscriptionStatus: 'active' }, (err) => {
