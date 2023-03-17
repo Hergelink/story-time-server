@@ -127,7 +127,11 @@ app.get('/profile', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-  res.cookie('token', '').json('ok');
+  // res.cookie('token', '').json('ok');
+  console.log('logout request received');
+  console.log('cookie before clearing:', req.cookies.token);
+  res.clearCookie('token').json('ok');
+  console.log('cookie after clearing:', req.cookies.token);
 });
 
 app.post('/post', async (req, res) => {
