@@ -87,9 +87,9 @@ app.post('/login', async (req, res) => {
               .status(200)
               .cookie('token', token, {
                 httpOnly: true,
-                sameSite: 'lax',
+                sameSite: 'none',
                 secure: true,
-                domain: process.env.COOKIE_DOMAIN,
+                
               })
               .json({
                 id: userDoc._id,
