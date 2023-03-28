@@ -123,6 +123,7 @@ app.get('/profile', (req, res) => {
 app.post('/logout', (req, res) => {
   res
     .clearCookie('token', {
+      httpOnly: true,
       path: '/',
       secure: true,
       sameSite: 'none',
