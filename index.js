@@ -82,8 +82,8 @@ app.post('/login', async (req, res) => {
               .cookie('token', token, {
                 httpOnly: true,
                 sameSite: 'none',
-                secure: true,
-                domain: process.env.COOKIE_DOMAIN,
+                secure: process.env.NODE_ENV === 'production',
+                // domain: process.env.COOKIE_DOMAIN,
                 path: '/',
               })
               .json({
