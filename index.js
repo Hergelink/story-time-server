@@ -12,7 +12,6 @@ const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const axios = require('axios');
-// const auth = require("./auth");
 const auth = require('./auth.js');
 
 const PORT = process.env.PORT || 3001;
@@ -35,16 +34,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 mongoose.set('strictQuery', false);
-const connectDB = async () => {
-  try {
-    const connect = await mongoose.connect(
-      `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.ypcmtju.mongodb.net/?retryWrites=true&w=majority`
-    );
-    console.log(`Mongo DB Connected: ${connect.connection.host}`);
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
+
+const connectDB = () => {
+  return mongoose.connect(
+    `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.ypcmtju.mongodb.net/?retryWrites=true&w=majority`
+  );
 };
 
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -90,6 +84,7 @@ app.post('/login', async (req, res) => {
                 sameSite: 'none',
                 secure: true,
                 domain: process.env.COOKIE_DOMAIN,
+                path: '/',
               })
               .json({
                 id: userDoc._id,
@@ -132,6 +127,7 @@ app.post('/logout', (req, res) => {
   console.log('cookie before clearing:', req.cookies.token);
   // res.clearCookie('token').json('ok');
   res
+    // .clearCookie('token', { path: '/' })
     .clearCookie('token', { path: '/', domain: process.env.COOKIE_DOMAIN })
     .json('ok');
   console.log('cookie after clearing:', req.cookies.token);
@@ -178,7 +174,7 @@ app.post('/payment', (req, res) => {
   const { metadata } = req.body;
   const userId = metadata.id;
 
-  // Update the user's subscription status in your database
+  // Update the user's subscription status in database
   User.updateOne({ _id: userId }, { subscriptionStatus: 'active' }, (err) => {
     if (err) {
       console.error(err);
@@ -194,8 +190,14 @@ app.get('/auth-endpoint', auth, (request, response) => {
   response.json({ message: 'You are authorized to access me' });
 });
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server listening on ${PORT}`);
+connectDB()
+  .then((connect) => {
+    console.log(`MongoDB Connected: ${connect.connection.host}`);
+    app.listen(PORT, () => {
+      console.log(`Server listening on ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+    process.exit(1);
   });
-});

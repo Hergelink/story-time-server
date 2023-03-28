@@ -9,7 +9,7 @@ module.exports = async (request, response, next) => {
     const decodedToken = await jwt.verify(token, process.env.SECRET);
 
     // retrieve the user details of the logged in user
-    const user = await decodedToken;
+    const user = decodedToken;
 
     // pass the the user down to the endpoints here
     request.user = user;
