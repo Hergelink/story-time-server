@@ -82,8 +82,8 @@ app.post('/login', async (req, res) => {
               .cookie('token', token, {
                 httpOnly: true,
                 sameSite: 'none',
-                secure: process.env.NODE_ENV === 'production',
-                // domain: process.env.COOKIE_DOMAIN,
+                // secure: process.env.NODE_ENV === 'production',
+                secure: true,
                 path: '/',
               })
               .json({
@@ -122,15 +122,14 @@ app.get('/profile', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-  // res.cookie('token', '').json('ok');
-  console.log('logout request received');
-  console.log('cookie before clearing:', req.cookies.token);
-  // res.clearCookie('token').json('ok');
   res
-    .clearCookie('token', { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'none' })
-    // .clearCookie('token', { path: '/', domain: process.env.COOKIE_DOMAIN })
+    .clearCookie('token', {
+      path: '/',
+      // secure: process.env.NODE_ENV === 'production',
+      secure: true,
+      sameSite: 'none',
+    })
     .json('ok');
-  console.log('cookie after clearing:', req.cookies.token);
 });
 
 app.post('/post', async (req, res) => {
@@ -187,7 +186,7 @@ app.post('/payment', (req, res) => {
 
 // authentication endpoint
 app.get('/auth-endpoint', auth, (request, response) => {
-  response.json({ message: 'You are authorized to access me' });
+  response.json({ message: 'Authorized' });
 });
 
 connectDB()
