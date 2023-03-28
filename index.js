@@ -127,7 +127,7 @@ app.post('/logout', (req, res) => {
   console.log('cookie before clearing:', req.cookies.token);
   // res.clearCookie('token').json('ok');
   res
-    .clearCookie('token', { path: '/' })
+    .clearCookie('token', { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'none' })
     // .clearCookie('token', { path: '/', domain: process.env.COOKIE_DOMAIN })
     .json('ok');
   console.log('cookie after clearing:', req.cookies.token);
