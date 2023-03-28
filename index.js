@@ -82,8 +82,8 @@ app.post('/login', async (req, res) => {
               .cookie('token', token, {
                 httpOnly: true,
                 sameSite: 'none',
-                // secure: process.env.NODE_ENV === 'production',
-                secure: true,
+                // secure: true,
+                secure: false,
                 path: '/',
               })
               .json({
@@ -125,8 +125,8 @@ app.post('/logout', (req, res) => {
   res
     .clearCookie('token', {
       path: '/',
-      // secure: process.env.NODE_ENV === 'production',
-      secure: true,
+      // secure: true,
+      secure: false,
       sameSite: 'none',
     })
     .json('ok');
