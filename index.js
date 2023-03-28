@@ -82,8 +82,7 @@ app.post('/login', async (req, res) => {
               .cookie('token', token, {
                 httpOnly: true,
                 sameSite: 'none',
-                // secure: true,
-                secure: false,
+                secure: true,
                 path: '/',
               })
               .json({
@@ -125,8 +124,7 @@ app.post('/logout', (req, res) => {
   res
     .clearCookie('token', {
       path: '/',
-      // secure: true,
-      secure: false,
+      secure: true,
       sameSite: 'none',
     })
     .json('ok');
