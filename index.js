@@ -81,7 +81,7 @@ app.post('/login', async (req, res) => {
               .status(200)
               .cookie('token', token, {
                 httpOnly: true,
-                sameSite: 'strict',
+                sameSite: 'none',
                 secure: true,
                 path: '/',
               })
